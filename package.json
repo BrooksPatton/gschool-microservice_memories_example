@@ -1,0 +1,20 @@
+{
+  "name": "gschool-microservice_memories_express",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/brookspatton/gschool-microservice_memories_express.git"
+  },
+  "author": "Brooks Patton",
+  "license": "UNLICENSED",
+  "homepage": "https://bitbucket.org/brookspatton/gschool-microservice_memories_express#readme",
+  "dependencies": {
+    "express": "^4.13.3"
+  },
+  "engine": "4.2.2"
+}
