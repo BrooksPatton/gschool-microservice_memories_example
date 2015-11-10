@@ -1,2 +1,6 @@
+# NPM stuff
 node_modules
 npm-debug.log
+
+# OS X stuff
+.DS_Store
