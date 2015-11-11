@@ -4,7 +4,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "predev": "source $NVM_DIR/nvm.sh; nvm use v4.2.1",
+    "dev": "nodemon app.js",
+    "test": "mocha --reporter dot"
   },
   "repository": {
     "type": "git",
@@ -19,5 +22,9 @@
     "express": "^4.13.3",
     "pg": "^4.4.3"
   },
-  "engine": "4.2.2"
+  "engine": "4.2.2",
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "supertest": "^1.1.0"
+  }
 }
