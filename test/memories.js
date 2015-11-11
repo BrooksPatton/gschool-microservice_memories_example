@@ -6,6 +6,10 @@ var Chance = require('chance');
 var should = chai.should();
 var chance = new Chance();
 
+describe('The canary test', function() {
+	it('should pass', canaryTest);
+});
+
 var canaryTest = function() {
 	[].should.be.a('array');
 };
@@ -25,6 +29,59 @@ var getAllMemories = function(done) {
 			res.body.data[0].attributes.these_days.should.be.a('string');
 			res.body.data[0].attributes.year.should.be.a('number');
 			res.body.data[0].links.self.should.be.a('string');
+
+			done();
+		});
+};
+
+var memoryMissingType = function(done) {
+	var randomMemory = {
+		data: {
+			attributes: {
+				old_days: chance.sentence(),
+				these_days: chance.sentence(),
+				year: chance.year()
+			}
+		}
+	};
+
+	request(app)
+		.post('/api/v1/memories')
+		.send(randomMemory)
+		.expect(400)
+		.end(function(err, res) {
+			if(err) return done(err);
+
+			res.body.error.should.be.a('array');
+			res.body.error[0].title.should.be.equal('missing type');
+			res.body.error[0].details.should.be.equal('There is no type memories in the payload');
+
+			done();
+		});
+};
+
+var memoryWrongType = function(done) {
+	var randomMemory = {
+		data: {
+			type: chance.string(),
+			attributes: {
+				old_days: chance.sentence(),
+				these_days: chance.sentence(),
+				year: chance.year()
+			}
+		}
+	};
+
+	request(app)
+		.post('/api/v1/memories')
+		.send(randomMemory)
+		.expect(400)
+		.end(function(err, res) {
+			if(err) return done(err);
+
+			res.body.error.should.be.a('array');
+			res.body.error[0].title.should.be.equal('type incorrect');
+			res.body.error[0].details.should.be.equal('Type must be "memory"');
 
 			done();
 		});
@@ -61,10 +118,6 @@ var addMemory = function(done) {
 		});
 };
 
-describe('The canary test', function() {
-	it('should pass', canaryTest);
-});
-
 describe('Sending a GET to /api/v1/memories', function() {
 	describe('should succeed', function() {
 		it('in getting all memories', getAllMemories);
@@ -72,6 +125,11 @@ describe('Sending a GET to /api/v1/memories', function() {
 });
 
 describe('Sending a POST to /api/v1/memories', function() {
+	describe('should fail', function() {
+		it('when a payload type is not included', memoryMissingType);
+		it('when a payload type is not "memory"', memoryWrongType);
+	});
+
 	describe('should succeed', function() {
 		it('in inserting a memory into the database', addMemory);
 	});
