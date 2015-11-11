@@ -87,6 +87,33 @@ var memoryWrongType = function(done) {
 		});
 };
 
+var oldDaysNotString = function(done) {
+	var randomMemory = {
+		data: {
+			type: 'memory',
+			attributes: {
+				old_days: chance.integer(),
+				these_days: chance.sentence(),
+				year: chance.year()
+			}
+		}
+	};
+
+	request(app)
+		.post('/api/v1/memories')
+		.send(randomMemory)
+		.expect(400)
+		.end(function(err, res) {
+			if(err) return done(err);
+
+			res.body.error.should.be.a('array');
+			res.body.error[0].title.should.be.equal('old_days incorrect');
+			res.body.error[0].details.should.be.equal('old_days must be a string');
+
+			done();
+		});
+};
+
 var addMemory = function(done) {
 	var randomMemory = {
 		data: {
@@ -128,6 +155,7 @@ describe('Sending a POST to /api/v1/memories', function() {
 	describe('should fail', function() {
 		it('when a payload type is not included', memoryMissingType);
 		it('when a payload type is not "memory"', memoryWrongType);
+		it('when old_days is not a string', oldDaysNotString);
 	});
 
 	describe('should succeed', function() {
