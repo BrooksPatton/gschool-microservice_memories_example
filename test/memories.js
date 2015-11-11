@@ -166,7 +166,34 @@ var yearIsNotNumber = function(done) {
 
 			done();
 		});
-}
+};
+
+var yearIsNotFourDigits = function(done) {
+	var randomMemory = {
+		data: {
+			type: 'memory',
+			attributes: {
+				old_days: chance.sentence(),
+				these_days: chance.sentence(),
+				year: chance.natural()
+			}
+		}
+	};
+
+	request(app)
+		.post('/api/v1/memories')
+		.send(randomMemory)
+		.expect(400)
+		.end(function(err, res) {
+			if(err) return done(err);
+
+			res.body.error.should.be.a('array');
+			res.body.error[0].title.should.be.equal('year incorrect');
+			res.body.error[0].details.should.be.equal('year must be four digits');
+
+			done();
+		});
+};
 
 var addMemory = function(done) {
 	var randomMemory = {
@@ -212,6 +239,7 @@ describe('Sending a POST to /api/v1/memories', function() {
 		it('when old_days is not a string', oldDaysNotString);
 		it('when these_days is not a string', theseDaysNotString);
 		it('when the year is not a number', yearIsNotNumber);
+		it('when the year is not a four digit number', yearIsNotFourDigits);
 	});
 
 	describe('should succeed', function() {
