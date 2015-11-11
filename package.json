@@ -17,6 +17,7 @@
   "license": "UNLICENSED",
   "homepage": "https://bitbucket.org/brookspatton/gschool-microservice_memories_express#readme",
   "dependencies": {
+    "body-parser": "^1.14.1",
     "cors": "^2.7.1",
     "dotenv": "^1.2.0",
     "express": "^4.13.3",
@@ -25,6 +26,7 @@
   "engine": "4.2.2",
   "devDependencies": {
     "chai": "^3.4.1",
+    "chance": "^0.8.0",
     "supertest": "^1.1.0"
   }
 }

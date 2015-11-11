@@ -2,20 +2,14 @@ var PORT = process.env.PORT || 3000;
 
 var express = require('express');
 var cors = require('cors');
+var bodyParser = require('body-parser');
 var memoryRoutes = require('./routes/memory');
-var dbClient = require('./models/memories');
-
-dbClient.connect(function(err) {
-	if(err) {
-		console.log('Error connecting to the database', err);
-
-		process.exit(100);
-	};
-});
 
 var app = express();
 
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 app.use(express.static('public'));
 
