@@ -7,12 +7,10 @@ var should = chai.should();
 var chance = new Chance();
 var addedMemory;
 
-describe('The canary test', function() {
-	it('should pass', canaryTest);
-});
-
-var canaryTest = function() {
+var canaryTest = function(done) {
 	[].should.be.a('array');
+
+	done();
 };
 
 var getAllMemories = function(done) {
@@ -291,6 +289,25 @@ var yearParameterIsNotNumber = function(done) {
 		});
 };
 
+var getAllYears = function(done) {
+	request(app)
+		.get('/api/v1/memories/years')
+		.expect(200)
+		.end(function(err, res) {
+			if(err) return done(err);
+			if(res.body.data.length === 0) return done(new Error('No data'));
+
+			res.body.links.self.should.be.a('string');
+			res.body.data[0].should.be.a('number');
+
+			done();
+		});
+};
+
+describe('The canary test', function() {
+	it('should pass', canaryTest);
+});
+
 describe('Sending a GET to /api/v1/memories', function() {
 	describe('should succeed', function() {
 		it('in getting all memories', getAllMemories);
@@ -319,5 +336,11 @@ describe('Sending a GET to /api/v1/memories/{year}', function() {
 	})
 	describe('should succeed', function() {
 		it('in getting all memories in a certain year', getAllMemoriesInCertainYear);
+	});
+});
+
+describe('Sending a GET to /api/v1/memories/years', function() {
+	describe('should succeed', function() {
+		it('in getting all years where there are memories', getAllYears);
 	});
 });

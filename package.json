@@ -7,7 +7,7 @@
     "start": "node app.js",
     "predev": "source $NVM_DIR/nvm.sh; nvm use v4.2.1",
     "dev": "nodemon app.js",
-    "test": "mocha --reporter dot"
+    "test": "mocha --reporter landing"
   },
   "repository": {
     "type": "git",

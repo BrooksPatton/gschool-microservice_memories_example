@@ -114,4 +114,29 @@ memoriesController.getAllInYear = function(req, res, next) {
 	pg.connect(config.database, queryDatabase);
 };
 
+memoriesController.getAllYears = function(req, res, next) {
+	var queryDatabase = function(err, client, done) {
+		if(err) return next(err);
+
+		client.query('SELECT DISTINCT year FROM memories ORDER BY year ASC', function(err, results) {
+			done();
+
+			if(err) return next(err);
+
+			var years = {
+				links: {self: req.headers.host + req.originalUrl},
+				data: results.rows.map(mapYears)
+			};
+
+			res.json(years);
+		});
+	};
+
+	var mapYears = function(year) {
+		return parseInt(year.year);
+	};
+
+	pg.connect(config.database, queryDatabase);
+};
+
 module.exports = memoriesController;
