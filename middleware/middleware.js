@@ -20,4 +20,14 @@ middleware.postMemory = function(req, res, next) {
 	next();
 };
 
+middleware.getByYear = function(req, res, next) {
+	var errors = [];
+
+	if(req.params.year && !parseInt(req.params.year)) errors.push(new ErrorObject('year incorrect', 'year must be four positive digits'));
+
+	if(errors.length !== 0) return res.status(400).send({error: errors});
+
+	next();
+};
+
 module.exports = middleware;

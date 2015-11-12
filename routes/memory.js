@@ -6,6 +6,6 @@ var memoryRouter = express.Router();
 
 memoryRouter.get('/memories', memoriesController.getAll);
 memoryRouter.post('/memories', middleware.postMemory, memoriesController.insert);
-memoryRouter.get('/memories/:year', memoriesController.getAllInYear);
+memoryRouter.get('/memories/:year', middleware.getByYear, memoriesController.getAllInYear);
 
 module.exports = memoryRouter;

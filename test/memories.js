@@ -276,6 +276,21 @@ var getAllMemoriesInCertainYear = function(done) {
 		});
 };
 
+var yearParameterIsNotNumber = function(done) {
+	request(app)
+		.get('/api/v1/memories/' + chance.word())
+		.expect(400)
+		.end(function(err, res) {
+			if(err) return done(err);
+
+			res.body.error.should.be.a('array');
+			res.body.error[0].title.should.be.equal('year incorrect');
+			res.body.error[0].details.should.be.equal('year must be four positive digits');
+
+			done();
+		});
+};
+
 describe('Sending a GET to /api/v1/memories', function() {
 	describe('should succeed', function() {
 		it('in getting all memories', getAllMemories);
@@ -299,6 +314,9 @@ describe('Sending a POST to /api/v1/memories', function() {
 });
 
 describe('Sending a GET to /api/v1/memories/{year}', function() {
+	describe('should fail', function() {
+		it('when the year passed in is not a number', yearParameterIsNotNumber);
+	})
 	describe('should succeed', function() {
 		it('in getting all memories in a certain year', getAllMemoriesInCertainYear);
 	});
