@@ -4,3 +4,7 @@ npm-debug.log
 
 # OS X stuff
 .DS_Store
+
+# Class stuff
+lesson.tasks
+tasks.todo
