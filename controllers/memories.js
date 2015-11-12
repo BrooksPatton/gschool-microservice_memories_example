@@ -76,4 +76,42 @@ memoriesController.insert = function(req, res, next) {
 	pg.connect(config.database, insertData);
 };
 
+memoriesController.getAllInYear = function(req, res, next) {
+	var queryDatabase = function(err, client, done) {
+		if(err) return next(err);
+
+		client.query('SELECT * from memories WHERE year=$1', [req.params.year], function(err, results) {
+			done();
+
+			if(err) return next(err);
+
+			var memories = {
+				links: {
+					self: req.headers.host + req.originalUrl
+				},
+				data: []
+			};
+
+			memories.data = results.rows.map(function(memory) {
+				return {
+					type: 'memory',
+					id: memory.id,
+					attributes: {
+						old_days: memory.old_days,
+						these_days: memory.these_days,
+						year: parseInt(memory.year)
+					},
+					links: {
+						self: req.headers.host + req.originalUrl + '/' + memory.id
+					}
+				};
+			});
+			
+			res.json(memories);
+		});
+	};
+
+	pg.connect(config.database, queryDatabase);
+};
+
 module.exports = memoriesController;

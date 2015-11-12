@@ -5,6 +5,7 @@ var Chance = require('chance');
 
 var should = chai.should();
 var chance = new Chance();
+var addedMemory;
 
 describe('The canary test', function() {
 	it('should pass', canaryTest);
@@ -249,6 +250,28 @@ var addMemory = function(done) {
 			res.body.data.attributes.year.should.be.equal(randomMemory.data.attributes.year);
 			res.body.data.links.self.should.be.a('string');
 
+			addedMemory = randomMemory;
+
+			done();
+		});
+};
+
+var getAllMemoriesInCertainYear = function(done) {
+	request(app)
+		.get('/api/v1/memories/' + addedMemory.data.attributes.year)
+		.expect(200)
+		.end(function(err, res) {
+			if(err) return done(err);
+			if(res.body.data.length === 0) return done(new Error('No data'));
+
+			res.body.links.self.should.be.a('string');
+			res.body.data[0].type.should.be.equal('memory');
+			res.body.data[0].id.should.be.a('number');
+			res.body.data[0].attributes.old_days.should.be.a('string');
+			res.body.data[0].attributes.these_days.should.be.a('string');
+			res.body.data[0].attributes.year.should.be.a('number');
+			res.body.data[0].links.self.should.be.a('string');
+
 			done();
 		});
 };
@@ -272,5 +295,11 @@ describe('Sending a POST to /api/v1/memories', function() {
 
 	describe('should succeed', function() {
 		it('in inserting a memory into the database', addMemory);
+	});
+});
+
+describe('Sending a GET to /api/v1/memories/{year}', function() {
+	describe('should succeed', function() {
+		it('in getting all memories in a certain year', getAllMemoriesInCertainYear);
 	});
 });
